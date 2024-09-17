@@ -8,7 +8,6 @@ const replicate = new Replicate({
 // Debug flag
 const DEBUG = true;
 
-
 const debugLog = (...args: unknown[]) => {
   if (DEBUG) {
     console.log('%cDebug:', 'color: #bada55; font-weight: bold', ...args);
