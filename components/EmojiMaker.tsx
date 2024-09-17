@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
@@ -9,7 +10,7 @@ import { Loader2, Download, Heart } from 'lucide-react';
 // Debug flag
 const DEBUG = true;
 
-const debugLog = (...args: any[]) => {
+const debugLog = (...args: unknown[]) => {
   if (DEBUG) {
     console.log('%cDebug:', 'color: #bada55; font-weight: bold', ...args);
   }
@@ -70,7 +71,7 @@ const EmojiMaker = () => {
       <div className="relative w-32 h-32 mx-auto">
         {generatedEmoji ? (
           <>
-            <img src={generatedEmoji} alt="Generated Emoji" className="w-full h-full object-cover" />
+            <Image src={generatedEmoji} alt="Generated Emoji" layout="fill" objectFit="cover" />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity bg-black bg-opacity-50">
               <Button variant="ghost" size="icon" onClick={handleDownload}>
                 <Download className="h-6 w-6 text-white" />
@@ -81,7 +82,7 @@ const EmojiMaker = () => {
             </div>
           </>
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400">
+          <div className="w-full h-32 flex items-center justify-center bg-gray-200 text-gray-400">
             {isGenerating ? <Loader2 className="animate-spin" /> : 'No emoji yet'}
           </div>
         )}
