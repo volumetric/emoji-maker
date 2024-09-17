@@ -20,6 +20,7 @@ const EmojiMaker = () => {
   const [prompt, setPrompt] = useState('');
   const [generatedEmoji, setGeneratedEmoji] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const generateEmoji = async () => {
     debugLog('Generating emoji with prompt:', prompt);
@@ -45,8 +46,8 @@ const EmojiMaker = () => {
       }
 
       const data = await response.json();
-      setGeneratedEmoji(data.emojiUrl);
       debugLog('Emoji generated:', data.emojiUrl);
+      setGeneratedEmoji(Array.isArray(data.emojiUrl) ? data.emojiUrl[0] : data.emojiUrl);
     } catch (error) {
       console.error('Error generating emoji:', error);
       debugLog('Error generating emoji:', error);
@@ -60,6 +61,11 @@ const EmojiMaker = () => {
     if (generatedEmoji) {
       window.open(generatedEmoji, '_blank');
     }
+  };
+
+  const handleImageError = () => {
+    console.error('Failed to load image');
+    setImageError(true);
   };
 
   return (
@@ -76,9 +82,15 @@ const EmojiMaker = () => {
         </Button>
       </div>
       <div className="relative w-32 h-32 mx-auto">
-        {generatedEmoji ? (
+        {generatedEmoji && !imageError ? (
           <>
-            <Image src={generatedEmoji} alt="Generated Emoji" layout="fill" objectFit="cover" />
+            <Image 
+              src={generatedEmoji} 
+              alt="Generated Emoji" 
+              layout="fill" 
+              objectFit="cover" 
+              onError={handleImageError}
+            />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity bg-black bg-opacity-50">
               <Button variant="ghost" size="icon" onClick={handleDownload}>
                 <Download className="h-6 w-6 text-white" />
@@ -90,7 +102,7 @@ const EmojiMaker = () => {
           </>
         ) : (
           <div className="w-full h-32 flex items-center justify-center bg-gray-200 text-gray-400">
-            {isGenerating ? <Loader2 className="animate-spin" /> : 'No emoji yet'}
+            {isGenerating ? <Loader2 className="animate-spin" /> : (imageError ? 'Failed to load image' : 'No emoji yet')}
           </div>
         )}
       </div>
