@@ -14,6 +14,9 @@ const debugLog = (...args: unknown[]) => {
   }
 };
 
+export const runtime = 'edge'; // Optional: Use Edge Runtime
+export const maxDuration = 300; // This sets the maximum duration to 300 seconds (5 minutes)
+
 export async function POST(request: Request) {
   const { prompt } = await request.json();
   debugLog('Received prompt:', prompt);

@@ -26,13 +26,19 @@ const EmojiMaker = () => {
     setIsGenerating(true);
 
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 300000); // 5 minutes timeout
+
       const response = await fetch('/api/generate-emoji', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ prompt }),
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         throw new Error('Failed to generate emoji');
@@ -44,6 +50,7 @@ const EmojiMaker = () => {
     } catch (error) {
       console.error('Error generating emoji:', error);
       debugLog('Error generating emoji:', error);
+      // You might want to set an error state here and display it to the user
     } finally {
       setIsGenerating(false);
     }
